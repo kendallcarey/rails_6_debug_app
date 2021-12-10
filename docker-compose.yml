@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  db:
+    platform: linux/x86_64
+    image: "mysql:5.7"
+    restart: always
+    environment:
+      - '3308:3308'
+    env_file:
+      - .env
+    expose:
+      - '3306'
+    volumes:
+      - db:/var/run/mysqld
+    logging:
+      driver: none
+    ports:
+      - "33081:3308"
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bundle exec rails s -p 3000 -e development -b '0.0.0.0'
+    env_file:
+      - .env
+    volumes:
+      - .:/debug-app
+      - bundle:/usr/local/bundle/
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "db"
+volumes:
+  db:
+  bundle:

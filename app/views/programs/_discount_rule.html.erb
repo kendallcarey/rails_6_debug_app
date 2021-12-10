@@ -1,0 +1,26 @@
+<h2>Discount Rule</h2>
+<div class="nested-fields">
+  <div>
+    <%= f.check_box :_destroy, class: 'form-check-input' %>
+    <%= f.label :_destroy, 'Remove Discount Rule', class: 'form-label' %>
+  </div>
+  <div class="row clearfix">
+    <%= f.label :name, "Discount Rule name", class: 'form-label' %>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+  <br>
+  <fieldset class="form-group border container">
+    <div class="row">
+      <h3>Upc List</h3>
+      <%# debugger %>
+      <%#= discount_rule.name %>
+      <%#= f.fields_for :upc_lists, discount_rule.upc_lists do |dr_subform| %>
+        <%#= render "upc_list", f: dr_subform %>
+      <%# end %>
+    </div>
+    <%= link_to_add_fields "Add UPC List", f, :upc_lists %>
+  </fieldset>
+  <div>
+    <%= link_to "Remove Discount Rule", '#', class: "remove_fields" %>
+  </div>
+</div>

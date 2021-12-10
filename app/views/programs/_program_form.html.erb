@@ -1,0 +1,88 @@
+<div class="container border">
+  <div class="row">
+    <% if @programs.id %>
+      <h1>Program #<%= @programs.name %></h1>
+    <% else %>
+      <h1>New Program</h1>
+    <% end %>
+    <br/>
+    <%= form_with model: @programs.becomes(Program), class: "program-authoring", local: true do |form| %>
+      <div class="mb-3 form-check">
+        <%= form.label :name, "Program Name", class: "form-label" %><br/>
+        <%= form.text_field :name, class: "form-control" %>
+      </div>
+      <br>
+      <div class="mb-3 form-check discount-rules border container">
+        <fieldset class="form-group">
+            <%= form.fields_for :discount_rules, @programs.discount_rules do |dr_subform| %>
+            <%= render partial: "discount_rule", collection: @programs.discount_rules, locals: { f: dr_subform } %>
+              <% end %>
+
+          <%= link_to_add_fields "Add Discount Rules", form, :discount_rules %>
+        </fieldset>
+        <br>
+      </div>
+      <%= form.submit "Submit" %>
+    <% end %>
+  </div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    window.onload = function() {
+        console.log("this has loaded")
+        class addFields {
+            constructor() {
+                console.log("querying add-fields")
+                this.links = document.querySelectorAll('.add_fields')
+                this.iterateLinks()
+            }
+
+            iterateLinks() {
+                if (this.links.length === 0) return
+                this.links.forEach(link => {
+                    link.addEventListener('click', e => {
+                        this.handleClick(link, e)
+                    })
+                })
+            }
+
+            handleClick(link, e) {
+                if (!link || !e) return
+                e.preventDefault()
+                let time = new Date().getTime()
+                let linkId = link.dataset.id
+                let regexp = linkId ? new RegExp(linkId, 'g') : null
+                let newFields = regexp ? link.dataset.fields.replace(regexp, time) : null
+                newFields ? link.insertAdjacentHTML('beforebegin', newFields) : null
+            }
+        }
+
+        new addFields()
+        class removeFields {
+            constructor() {
+                this.iterateLinks()
+            }
+
+            iterateLinks() {
+                document.addEventListener('click', e => {
+                    if (e.target && e.target.className == 'remove_fields') {
+                        this.handleClick(e.target, e)
+                    }
+                })
+            }
+
+            handleClick(link, e) {
+                if (!link || !e) return
+                e.preventDefault()
+                let fieldParent = link.closest('.nested-fields')
+                let deleteField = fieldParent
+                  ? fieldParent.querySelector('input[type="hidden"]')
+                  : null
+                if (deleteField) {
+                    deleteField.value = 1
+                    fieldParent.style.display = 'none'
+                }
+            }
+        }
+        new removeFields()
+    }
+</script>
